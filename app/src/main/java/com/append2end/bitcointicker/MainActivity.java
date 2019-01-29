@@ -24,11 +24,10 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity {
 
     // Constants:
-    // TODO: Create the base URL
     private final String BASE_URL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC";
 
     // Member Variables:
-    TextView mPriceTextView;
+    protected TextView mPriceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +47,13 @@ public class MainActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        // TODO: Set an OnItemSelected listener on the spinner
+        // Create and set OnItemSelectedListener
         spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Bitcoin", "" + parent.getItemAtPosition(position));
                 pullJSONInfo(BASE_URL + parent.getItemAtPosition(position));
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 Log.d("Bitcoin", "Nothing selected");
@@ -64,8 +61,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: complete the pullJSONInfo() method
-    private void pullJSONInfo(String url) {
+    /***
+     * Retrieves relevant JSON object and changes mPriceTextView to 'last' JSON object
+     * @param url
+     */
+    protected void pullJSONInfo(String url) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
@@ -74,14 +74,12 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"
                 Log.d("Bitcoin", "JSON: " + response.toString());
-
                 try {
                     mPriceTextView.setText(response.getString("last"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
@@ -91,9 +89,5 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Request Failed", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
-
 }
